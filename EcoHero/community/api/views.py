@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from rest_framework import generics, permissions, status # type: ignore
 from rest_framework.views import APIView # type: ignore
 from rest_framework.response import Response # type: ignore
+from django.shortcuts import get_object_or_404
 
 class PostListCreateView(APIView):
     permissions_allowed = [permissions.IsAuthenticatedOrReadOnly]
