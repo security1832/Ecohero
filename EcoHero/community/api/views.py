@@ -18,7 +18,7 @@ class PostListCreateView(APIView):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class CommentCreateView(APIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -46,3 +46,32 @@ class ToggleLikeView(APIView):
             return Response({'messages': 'Post Unliked'}, status=status.HTTP_200_OK)
         return Response({'message': 'Post liked'}, status=status.HTTP_201_CREATED)
 
+class EcoStoryListCreateView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    def post(self, request):
+        serializer = EcoStorySerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(user=request.user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def get(self, request):
+        now = timezone.now()
+        stories = EcoStory.objects.filter(expires_at_gt=now).order_by('-created_at')
+        serializers = EcoStorySerializer(stories, many=True)
+        return Response(serializers.data, status=status.HTTP_200_OK)
+
+class VedioRoomListCreateView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        rooms = VedioRoom.objects.filter(is_active=True).order_by('-created_at')
+        serializer = VedioRoomSerializer(rooms, many=True)
+        return Response(serializer.data)
+    
+    def post(self, request):
+        serializer = VedioRoomSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(creator=request.user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, ststus=status.HTTP_400_BAD_REQUEST)

@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'products',
     'challenges',
     'community',
+    'django_celery_beat',
 
 ]
 
@@ -133,3 +134,7 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+CELERY_BROKER_URL = 'redis://localhost:6379/0'  # Use Redis (recommended)
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'

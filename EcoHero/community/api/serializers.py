@@ -20,3 +20,14 @@ class PostSerializer(serializers.ModelSerializer):
     def get_like_count(self, obj):
         return obj.likes.count()
     
+class EcoStorySerializer(serializers.ModelSerializer):
+    class Mete:
+        fields = '__all__'
+        read_only_fields = ['user', 'created_at']
+
+class VedioRoomSerializer(serializers.ModelSerializer):
+    jitsi_url = serializers.ReadOnlyFields()
+
+    class Meta:
+        model = VedioRoom
+        fields = ['id', 'name', 'creator', 'created_at', 'is_active', 'jitsi_url']
