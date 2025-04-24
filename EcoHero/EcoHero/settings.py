@@ -138,3 +138,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 CELERY_BROKER_URL = 'redis://localhost:6379/0'  # Use Redis (recommended)
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,  # or any number per page
+    'DEFAULT_FILTER_BACKENDS': ['rest_framework.filters.SearchFilter'],
+}
