@@ -43,7 +43,7 @@ class EcoStory(models.Model):
         super().save(*args, **kwargs)
 
 class VedioRoom(models.Model):
-    name = models.CharField(max_lenght=255)
+    name = models.CharField(max_length=255)
     creator = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=False)
