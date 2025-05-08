@@ -9,7 +9,7 @@ class Challenge(models.Model):
     xp_reward = models.PositiveIntegerField(default=0)
 
 class UserChallenge(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    challenge = models.ForeignKey(Challenge, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    challenge = models.ForeignKey(Challenge, on_delete=models.CASCADE, null=True, blank=True)
     is_completed = models.BooleanField(default=False)
     completed_at = models.DateTimeField(null=True, blank=True)

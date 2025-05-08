@@ -53,9 +53,9 @@ class VedioRoom(models.Model):
     
 class ChatRoom(models.Model):
     ROOM_TYPES = (
-        ('dm', 'Direct Message')
-        ('group', 'Group Chat')
-        ('public', 'Public Channel')
+        ('dm', 'Direct Message'),
+        ('group', 'Group Chat'),
+        ('public', 'Public Channel'),
     )
 
     room_type = models.CharField(max_length=10, choices=ROOM_TYPES, default='dm')
