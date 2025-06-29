@@ -1,0 +1,63 @@
+{% extends "store/base.html" %}
+
+{% block title %}{{ product.name }} - COOL STUFF KENYA{% endblock %}
+
+{% block content %}
+<style>
+    .product-detail-container { display: flex; margin-top: 20px; }
+    .product-image { flex: 1; padding-right: 30px; }
+    .product-image img { max-width: 100%; height: auto; border: 1px solid #ddd; }
+    .product-info { flex: 2; }
+    .product-info h2 { margin-top: 0; }
+    .product-info .price { font-size: 1.5em; color: #5cb85c; margin-bottom: 20px; }
+    .product-info .stock { margin-bottom: 20px; }
+    .product-info .description { margin-top: 20px; line-height: 1.6; }
+    .add-to-cart-form { margin-top: 20px; }
+    .add-to-cart-form label { margin-right: 10px; }
+    .add-to-cart-form input[type="number"] { width: 60px; padding: 8px; margin-right: 10px; }
+    .add-to-cart-form button { padding: 10px 20px; }
+</style>
+
+<div class="product-detail-container">
+    <div class="product-image">
+        {% if product.image %}
+            <img src="{{ product.image.url }}" alt="{{ product.name }}">
+        {% else %}
+            <img src="https://via.placeholder.com/400x300" alt="Placeholder image">
+        {% endif %}
+    </div>
+    <div class="product-info">
+        <h2>{{ product.name }}</h2>
+        <p class="price">KES {{ product.price }}</p>
+        <p class="stock">
+            {% if product.stock > 0 %}
+                In stock ({{ product.stock }} available)
+            {% else %}
+                Out of stock
+            {% endif %}
+        </p>
+        <p><strong>Category:</strong> <a href="{{ product.category.get_absolute_url }}">{{ product.category.name }}</a></p>
+
+        {# Add to Cart Form - Basic structure, functionality to be added in cart step #}
+        {% if product.available and product.stock > 0 %}
+            <form action="{% url 'store:cart_add' product.id %}" method="post" class="add-to-cart-form">
+                {% csrf_token %}
+                {{ cart_product_form.quantity.label_tag }}
+                {{ cart_product_form.quantity }}
+                {{ cart_product_form.update }} {# Hidden field for update flag #}
+                <input type="hidden" name="next" value="{{ request.path }}"> {# To redirect back to product page #}
+                <button type="submit">Add to Cart</button>
+            </form>
+        {% else %}
+            <p>This product is currently unavailable.</p>
+        {% endif %}
+
+        <div class="description">
+            <h3>Description</h3>
+            {{ product.description|linebreaksbr }}
+        </div>
+    </div>
+</div>
+
+<p style="margin-top: 20px;"><a href="{% url 'store:product_list' %}">&laquo; Back to products</a></p>
+{% endblock %}

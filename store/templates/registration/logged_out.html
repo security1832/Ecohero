@@ -1,0 +1,9 @@
+{% extends "store/base.html" %}
+
+{% block title %}Logged Out - COOL STUFF KENYA{% endblock %}
+
+{% block content %}
+<h2>Logged Out</h2>
+<p>You have been successfully logged out.</p>
+<p><a href="{% url 'login' %}">Login again</a> or go to <a href="{% url 'store:product_list' %}">Homepage</a>.</p>
+{% endblock %}

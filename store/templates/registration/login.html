@@ -1,0 +1,13 @@
+{% extends "store/base.html" %}
+
+{% block title %}Login - COOL STUFF KENYA{% endblock %}
+
+{% block content %}
+<h2>Login</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Login</button>
+</form>
+<p>Don't have an account? <a href="{% url 'store:register' %}">Register here</a>.</p>
+{% endblock %}

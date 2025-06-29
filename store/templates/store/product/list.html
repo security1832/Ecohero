@@ -1,0 +1,71 @@
+{% extends "store/base.html" %}
+
+{% block title %}
+    {% if category %}{{ category.name }}{% else %}All Products{% endif %} - COOL STUFF KENYA
+{% endblock %}
+
+{% block content %}
+<style>
+    .sidebar { float: left; width: 20%; padding-right: 20px; }
+    .sidebar h3 { margin-top: 0; }
+    .sidebar ul { list-style: none; padding: 0; }
+    .sidebar ul li a { text-decoration: none; color: #337ab7; }
+    .sidebar ul li a:hover { text-decoration: underline; }
+    .main-content { float: left; width: 75%; }
+    .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
+    .product-item { border: 1px solid #ddd; padding: 15px; text-align: center; }
+    .product-item img { max-width: 100%; height: auto; margin-bottom: 10px; max-height:150px; object-fit: cover; }
+    .product-item h4 { margin: 10px 0; font-size: 1.1em; }
+    .product-item p.price { font-weight: bold; color: #5cb85c; }
+    .search-form { margin-bottom: 20px; }
+    .search-form input[type="text"] { padding: 8px; width: 300px; }
+    .search-form button { padding: 8px 15px; }
+    .clearfix::after { content: ""; clear: both; display: table; }
+</style>
+
+<div class="clearfix">
+    <aside class="sidebar">
+        <h3>Categories</h3>
+        <ul>
+            <li {% if not category %}class="active"{% endif %}>
+                <a href="{% url 'store:product_list' %}">All Products</a>
+            </li>
+            {% for c in categories %}
+                <li {% if category.slug == c.slug %}class="active"{% endif %}>
+                    <a href="{{ c.get_absolute_url }}">{{ c.name }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </aside>
+
+    <div class="main-content">
+        <h2>{% if category %}{{ category.name }}{% else %}Products{% endif %}</h2>
+
+        <form method="get" action="{% url 'store:product_search' %}" class="search-form">
+            <input type="text" name="q" placeholder="Search products..." value="{{ query|default:'' }}">
+            <button type="submit">Search</button>
+        </form>
+
+        {% if products %}
+            <div class="product-grid">
+                {% for product in products %}
+                    <div class="product-item">
+                        <a href="{{ product.get_absolute_url }}">
+                            {% if product.image %}
+                                <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                            {% else %}
+                                <img src="https://via.placeholder.com/150" alt="Placeholder image">
+                            {% endif %}
+                            <h4>{{ product.name }}</h4>
+                        </a>
+                        <p class="price">KES {{ product.price }}</p>
+                        {# Add to cart button will go here later #}
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No products found matching your criteria.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

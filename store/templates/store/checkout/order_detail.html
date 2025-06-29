@@ -1,0 +1,78 @@
+{% extends "store/base.html" %}
+
+{% block title %}Order #{{ order.id }} Details - COOL STUFF KENYA{% endblock %}
+
+{% block content %}
+<style>
+    .order-detail-box { background-color: #f9f9f9; padding: 25px; border-radius: 5px; margin-bottom: 20px; }
+    .order-detail-box h2 { margin-top: 0; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+    .order-info p { margin: 8px 0; }
+    .order-info strong { min-width: 150px; display: inline-block; }
+    .order-items-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    .order-items-table th, .order-items-table td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+    .order-items-table th { background-color: #f0f0f0; }
+    .order-items-table img { max-width: 60px; height: auto; margin-right: 10px; vertical-align: middle; }
+    .order-items-table .product-name-cell { display: flex; align-items: center; }
+    .order-total-summary { float: right; width: 30%; margin-top: 20px; }
+    .order-total-summary p { display: flex; justify-content: space-between; font-size: 1.1em; }
+    .order-total-summary .grand-total { font-weight: bold; font-size: 1.3em; border-top: 2px solid #ddd; padding-top: 10px; }
+</style>
+
+<div class="order-detail-box">
+    <h2>Order #{{ order.id }} - {{ order.get_status_display }}</h2>
+    <div class="order-info">
+        <p><strong>Order Date:</strong> {{ order.created_at|date:"F j, Y, P" }}</p>
+        <p><strong>Total Amount:</strong> KES {{ order.total_paid }}</p>
+        <p><strong>Payment Method:</strong> {{ order.payment_method }}</p>
+        {% if order.shipping_address %}
+        <p><strong>Shipping Address:</strong></p>
+        <address style="margin-left: 20px; font-style: normal;">
+            {{ order.shipping_address.full_name }}<br>
+            {{ order.shipping_address.address_line_1 }}<br>
+            {% if order.shipping_address.address_line_2 %}{{ order.shipping_address.address_line_2 }}<br>{% endif %}
+            {{ order.shipping_address.city }}{% if order.shipping_address.postal_code %}, {{ order.shipping_address.postal_code }}{% endif %}<br>
+            {{ order.shipping_address.country }}<br>
+            Phone: {{ order.shipping_address.phone_number }}
+        </address>
+        {% endif %}
+    </div>
+</div>
+
+<h3>Order Items</h3>
+<table class="order-items-table">
+    <thead>
+        <tr>
+            <th>Product</th>
+            <th>Unit Price</th>
+            <th>Quantity</th>
+            <th>Total</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in order.items.all %}
+        <tr>
+            <td class="product-name-cell">
+                {% if item.product.image %}
+                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
+                {% else %}
+                <img src="https://via.placeholder.com/60" alt="Placeholder">
+                {% endif %}
+                <a href="{{ item.product.get_absolute_url }}">{{ item.product.name }}</a>
+            </td>
+            <td>KES {{ item.price }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>KES {{ item.get_cost }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div class="order-total-summary">
+    <p><span>Subtotal:</span> <span>KES {{ order.total_paid }}</span></p> {# Assuming no tax/shipping for now #}
+    <p class="grand-total"><span>Grand Total:</span> <span>KES {{ order.total_paid }}</span></p>
+</div>
+<div style="clear:both;"></div>
+
+<p style="margin-top:30px;"><a href="{% url 'store:profile' %}" class="btn">Back to Profile / Order History</a></p>
+
+{% endblock %}

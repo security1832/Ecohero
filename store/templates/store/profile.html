@@ -1,0 +1,46 @@
+{% extends "store/base.html" %}
+
+{% block title %}Your Profile - COOL STUFF KENYA{% endblock %}
+
+{% block content %}
+<h2>Your Profile</h2>
+<p>Welcome, {{ user.username }}!</p>
+
+<style>
+    .order-history-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    .order-history-table th, .order-history-table td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+    .order-history-table th { background-color: #f8f8f8; }
+    .order-history-table a { color: #337ab7; text-decoration: none; }
+    .order-history-table a:hover { text-decoration: underline; }
+</style>
+
+<h3>Your Order History</h3>
+{% if orders %}
+    <table class="order-history-table">
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Date</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+            <tr>
+                <td>#{{ order.id }}</td>
+                <td>{{ order.created_at|date:"Y-m-d H:i" }}</td>
+                <td>KES {{ order.total_paid }}</td>
+                <td>{{ order.get_status_display }}</td>
+                <td><a href="{% url 'store:order_detail' order.id %}">View Details</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>You have no orders yet.</p>
+{% endif %}
+
+<p style="margin-top:20px;"><a href="{% url 'logout' %}">Logout</a></p>
+{% endblock %}

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}COOL STUFF KENYA{% endblock %}</title>
+    <style>
+        body { font-family: sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; color: #333; }
+        header { background-color: #333; color: #fff; padding: 1rem 0; text-align: center; }
+        nav { background-color: #444; color: #fff; padding: 0.5rem; text-align: center; }
+        nav a { color: #fff; margin: 0 1rem; text-decoration: none; }
+        nav a:hover { text-decoration: underline; }
+        .container { width: 80%; margin: 2rem auto; background-color: #fff; padding: 2rem; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .messages { list-style: none; padding: 0; margin: 1rem 0; }
+        .messages li { padding: 0.5rem; margin-bottom: 0.5rem; border-radius: 4px; }
+        .messages li.success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .messages li.error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .messages li.info { background-color: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        footer { text-align: center; padding: 1rem; background-color: #333; color: #fff; margin-top: 2rem; }
+        form p { margin-bottom: 1rem; }
+        form label { display: block; margin-bottom: 0.5rem; }
+        form input[type="text"], form input[type="email"], form input[type="password"], form select, form textarea {
+            width: 100%;
+            padding: 0.5rem;
+            margin-bottom: 0.5rem;
+            border: 1px solid #ddd;
+            box-sizing: border-box;
+        }
+        form button {
+            background-color: #5cb85c;
+            color: white;
+            padding: 0.7rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        form button:hover { background-color: #4cae4c; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>COOL STUFF KENYA</h1>
+    </header>
+    <nav>
+        <a href="{% url 'store:product_list' %}">Home</a>
+        <a href="{% url 'store:cart_detail' %}">
+            Cart
+            {% if cart|length > 0 %}
+                ({{ cart|length }} item{{ cart|length|pluralize }}, KES {{ cart.get_total_price }})
+            {% else %}
+                (empty)
+            {% endif %}
+        </a>
+        {% if user.is_authenticated %}
+            <a href="{% url 'store:profile' %}">Profile</a>
+            <a href="{% url 'logout' %}">Logout ({{ user.username }})</a>
+        {% else %}
+            <a href="{% url 'login' %}">Login</a>
+            <a href="{% url 'store:register' %}">Register</a>
+        {% endif %}
+    </nav>
+    <div class="container">
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li class="{{ message.tags }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        {% block content %}
+        {% endblock %}
+    </div>
+    <footer>
+        <p>&copy; {% now "Y" %} COOL STUFF KENYA</p>
+    </footer>
+</body>
+</html>

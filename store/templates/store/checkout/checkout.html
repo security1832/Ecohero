@@ -1,0 +1,65 @@
+{% extends "store/base.html" %}
+
+{% block title %}Checkout - COOL STUFF KENYA{% endblock %}
+
+{% block content %}
+<style>
+    .checkout-container { display: flex; justify-content: space-between; gap: 30px; }
+    .shipping-form-section { flex: 2; }
+    .order-summary-section { flex: 1; background-color: #f9f9f9; padding: 20px; border-radius: 5px; }
+    .order-summary-section h3 { margin-top: 0; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 15px; }
+    .order-summary-section ul { list-style: none; padding: 0; margin: 0 0 20px 0; }
+    .order-summary-section ul li { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.9em; }
+    .order-summary-section ul li span.product-name { flex-grow: 1; }
+    .order-summary-section ul li span.product-qty { margin-left: 10px; margin-right: 10px; }
+    .order-summary-section .total-price { font-weight: bold; font-size: 1.2em; display: flex; justify-content: space-between; border-top: 1px solid #eee; padding-top: 10px; margin-top: 15px; }
+    .payment-method-info { background-color: #e7f3fe; border: 1px solid #d1e7fd; padding: 15px; margin-top: 20px; border-radius: 4px; }
+    .payment-method-info h4 { margin-top: 0; color: #0c5460; }
+    .form-actions button { width: 100%; padding: 12px; font-size: 1.1em; }
+</style>
+
+<h2>Checkout</h2>
+
+{% if cart %}
+<div class="checkout-container">
+    <div class="shipping-form-section">
+        <h3>Shipping Address</h3>
+        <form method="post">
+            {% csrf_token %}
+            {{ shipping_form.as_p }}
+            {# You could add a checkbox here for "Save this address for future orders" or "Set as default" #}
+            {# e.g., <p><input type="checkbox" name="set_default" id="id_set_default"> <label for="id_set_default">Set as my default shipping address</label></p> #}
+
+            <div class="payment-method-info">
+                <h4>Payment Method</h4>
+                <p>Payment will be made upon delivery of your items.</p>
+            </div>
+
+            <div class="form-actions" style="margin-top: 20px;">
+                <button type="submit">Place Order (Pay on Delivery)</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="order-summary-section">
+        <h3>Your Order Summary</h3>
+        <ul>
+            {% for item in cart %}
+            <li>
+                <span class="product-name">{{ item.product.name }}</span>
+                <span class="product-qty">x {{ item.quantity }}</span>
+                <span class="product-price">KES {{ item.total_price }}</span>
+            </li>
+            {% endfor %}
+        </ul>
+        <p class="total-price">
+            <span>Total:</span>
+            <span>KES {{ cart.get_total_price }}</span>
+        </p>
+    </div>
+</div>
+{% else %}
+    <p>Your cart is empty. <a href="{% url 'store:product_list' %}">Continue shopping</a>.</p>
+{% endif %}
+
+{% endblock %}
